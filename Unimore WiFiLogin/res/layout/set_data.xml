@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/background"
+    android:padding="30dip"
+    >
+    <LinearLayout
+    	android:orientation="vertical"
+    	android:layout_height="wrap_content"
+    	android:layout_width="fill_parent"
+    	android:layout_gravity="center"
+    	>
+  	<TextView
+  		android:layout_gravity="center"
+    	android:layout_marginBottom="10dip"
+    	android:textSize="24.5sp"
+  		android:layout_height="wrap_content"
+  		android:layout_width="wrap_content"
+  		android:text="@string/set_data_title" 
+  		/>
+  	<TextView
+  		android:layout_gravity="center"
+  		android:layout_height="wrap_content"
+  		android:layout_width="wrap_content"
+  		android:text="@string/username"
+  		/>
+  	<EditText
+  		android:id="@+id/username"
+  		android:layout_width="fill_parent"
+  		android:layout_height="wrap_content"
+  		android:maxLines="1" 
+  		android:hint="@string/username" 
+  		android:isScrollContainer="false" android:inputType="text"/>
+  	<TextView
+  		android:layout_gravity="center"
+  		android:layout_height="wrap_content"
+  		android:layout_width="wrap_content"
+  		android:text="@string/password"
+  		/>
+  	<EditText
+  		android:id="@+id/password"
+  		android:layout_width="fill_parent"
+  		android:layout_height="wrap_content"
+  		android:hint="@string/password" 
+  		android:maxLines="1" 
+  		android:inputType="textPassword" 
+  		android:isScrollContainer="false"/>
+
+  	<CheckBox
+  	    android:id="@+id/vibraspento"
+  	    android:layout_width="wrap_content"
+  	    android:layout_height="wrap_content"
+  	    android:text="@string/vibraspento" />
+
+  	<Button
+  		android:id="@+id/save"
+  		android:layout_width="fill_parent"
+  		android:layout_height="wrap_content"
+  		android:text="@string/save"
+  		android:layout_marginTop="30dip"
+  		/>
+
+</LinearLayout>
+</LinearLayout>

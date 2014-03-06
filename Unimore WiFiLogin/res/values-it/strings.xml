@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Unimore WiFi Authenticator</string>
+    <string name="main_title">Unimore WiFi Authenticator</string>
+	<string name="login_label">Login</string>
+	<string name="logout_label">Logout</string>
+	<string name="set_data_label">Impostazioni</string>
+	<string name="about_label">Info</string>
+	<string name="about_title">Info Unimore WiFi Authenticator</string>
+	<string name="about_text"><i>Creato da Alberto Copelli\n\nciopper90dev@gmail.com</i></string>
+	<string name="exit_label">Esci</string>
+	<string name="set_data_title">Impostazioni</string>
+	<string name="username">Nome Utente</string>
+	<string name="password">Password</string>
+	<string name="save">Salva</string>
+	<string name="init_title">Inizializzazione</string>
+	<string name="login_error">Errore nel login</string>
+	<string name="login_successful">Login effettuato</string>
+	<string name="login_data_error">User e/o password Sbagliati</string>
+	<string name="logout_error">Errore nel logout</string>
+	<string name="logout_successful">Logout effettuato</string>
+	<string name="login_successful_all">Login già effettuato</string>
+	<string name="wifi_err">Errore thread connessione WiFi</string>
+	<string name="ssid_error">Il nome dell\'Access Point deve essere <b><i>UNIMORE</i></b>.\n\nControllalo nelle Impostazioni di Rete.</string>
+	<string name="wifi_on">Abilitare WiFi</string>
+	<string name="no_ap">Non sei connesso a nessun Access Point.\nVerifica in Impostazioni WiFi.</string>
+	<string name="save_data_successful">Dati salvati</string>
+	<string name="save_data_error">Dati non salvati</string>
+	<string name="missing_data">Username e password mancanti</string>
+	<string name="login_progress">Login in corso</string>
+	<string name="logout_progress">Logout in corso</string>
+	<string name="saving_data">Salvataggio in corso</string>
+	<string name="intent_label">Auto-Login</string>
+	<string name="vibraspento">Vibra a schermo spento</string>
+</resources>

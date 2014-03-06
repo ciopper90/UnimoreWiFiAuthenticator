@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bssid">UNIMORE</string>
+    <string name="app_name">Unimore WiFi Authenticator</string>
+    <string name="main_title">Unimore WiFi Authenticator</string>
+	<string name="login_label">Login</string>
+	<string name="logout_label">Logout</string>
+	<string name="set_data_label">Settings</string>
+	<string name="about_label">About</string>
+	<string name="about_title">About Unimore WiFi Authenticator</string>
+	<string name="about_text"><i>Created by Alberto Copelli\n\nciopper90dev@gmail.com</i></string>
+	<string name="exit_label">Quit</string>
+	<string name="set_data_title">Settings</string>
+	<string name="username">Username</string>
+	<string name="password">Password</string>
+	<string name="save">Save</string>
+	<string name="init_title">Initializing</string>
+	<string name="login_error">Error while logging in</string>
+	<string name="login_data_error">Incorrect User e/o Password</string>
+	<string name="login_successful">Login done</string>
+	<string name="login_successful_all">Already Logged</string>
+	<string name="logout_error">Error while logging out</string>
+	<string name="ssid_error">Connected to a wrong Access point.\nThe name of the access point should be <b><i>UNIMORE</i></b>.\nCheck it in Network Settings</string>
+	<string name="wifi_on">Enable WiFi</string>
+	<string name="wifi_err">WiFi connection thread error</string>
+	<string name="no_ap">Your aren\'t connected to any Access Point.\nVerify it in Network Settings</string>
+	<string name="logout_successful">Logout done</string>
+	<string name="save_data_successful">Data saved</string>
+	<string name="save_data_error">Error while saving</string>
+	<string name="missing_data">Missing username e password</string>
+	<string name="login_progress">Login</string>
+	<string name="logout_progress">Logout</string>
+	<string name="saving_data">Saving</string>
+	<string name="intent_label">Auto-Login</string>
+	<string name="vibraspento">Vibrate when display is off</string>
+</resources>

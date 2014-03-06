@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:background="@color/background" 
+	android:layout_height="fill_parent"
+	android:layout_width="fill_parent" 
+	android:padding="10dip"
+	android:orientation="horizontal">
+	<LinearLayout android:orientation="vertical"
+		android:layout_height="wrap_content" 
+		android:layout_width="fill_parent"
+		android:layout_gravity="center" 
+		android:paddingLeft="10dip"
+		android:paddingRight="10dip">
+		<TextView 
+			android:layout_height="wrap_content" 
+			android:layout_width="wrap_content"
+			android:layout_gravity="center" 
+			android:textSize="24.5sp" 
+android:gravity="center" android:text="@string/main_title" android:layout_marginBottom="10dip"/>
+		<TableLayout 
+			android:layout_height="fill_parent"
+			android:layout_width="fill_parent" 
+			android:layout_gravity="center"
+			android:stretchColumns="*" 
+			android:shrinkColumns="*">
+			<TableRow 
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent" 
+				android:layout_weight="1">
+				<Button android:id="@+id/login_button" 
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content" 
+					android:text="@string/login_label"
+					android:fadingEdge="horizontal|vertical" 
+				/>
+				<Button android:layout_height="fill_parent"
+					android:layout_width="fill_parent" 
+					android:id="@+id/logout_button"
+					android:text="@string/logout_label" 
+					android:fadingEdge="horizontal|vertical" 
+				/>
+			</TableRow>
+		</TableLayout>
+		<Button 
+			android:layout_height="fill_parent"
+			android:layout_width="fill_parent" 
+			android:gravity="center" 
+			android:id="@+id/exit_button"
+			android:text="@string/exit_label" 
+			android:fadingEdge="horizontal|vertical" 
+		/>
+			<CheckBox
+	    android:id="@+id/checkBox1"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:text="@string/intent_label" />
+
+
+	
+</LinearLayout>
+
+
+</LinearLayout>

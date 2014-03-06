@@ -1,2 +1,2 @@
-UnimorwWiFiAuthenticator
+UnimoreWiFiAuthenticator
 ========================

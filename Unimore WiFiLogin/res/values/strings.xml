@@ -20,6 +20,7 @@
 	<string name="login_successful">Login done</string>
 	<string name="login_successful_all">Already Logged</string>
 	<string name="logout_error">Error while logging out</string>
+	<string name="logout_error_not_logged">User not logged</string>
 	<string name="ssid_error">Connected to a wrong Access point.\nThe name of the access point should be <b><i>UNIMORE</i></b>.\nCheck it in Network Settings</string>
 	<string name="wifi_on">Enable WiFi</string>
 	<string name="wifi_err">WiFi connection thread error</string>

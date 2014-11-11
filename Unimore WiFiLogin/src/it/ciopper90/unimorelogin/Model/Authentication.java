@@ -2,42 +2,25 @@ package it.ciopper90.unimorelogin.Model;
 
 import it.ciopper90.unimorelogin.Exceptions.LoginException;
 import it.ciopper90.unimorelogin.Exceptions.LogoutException;
-import it.ciopper90.unimorelogin.Utils.SimpleSSLSocketFactory;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
-import java.net.UnknownHostException;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
-
-
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpVersion;
+import javax.net.ssl.HttpsURLConnection;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.ClientConnectionManager;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.params.HttpProtocolParams;
-import org.apache.http.protocol.HTTP;
-import org.apache.http.util.EntityUtils;
-
 import android.util.Log;
 
 public class Authentication {
@@ -46,110 +29,80 @@ public class Authentication {
 	 */
 
 	private static final String TAG = "UnimoreWiFi:Authentication";
-
+	
 	public static void Authenticate(Data data, String ip, String mac)
 			throws LoginException {
-		HttpClient httpclient = getClient(5000);
 		int ok=1;
-		HttpGet httpget=new HttpGet("http://ciopper90.altervista.org/unimore.html");
-
-
-		try{
-			HttpResponse response = httpclient.execute(httpget);
-			String returnString=EntityUtils.toString(response.getEntity());
-			if(returnString.contains("UnimoreWifiLogin")){
-				//login gia effettuato
-				Log.d("Autentication", "2");
-				ok=3;
-			}else{
-				//bisogna effettuare il login	
-				ok=1;
-			}
-		} catch (ClientProtocolException e) {
-			Log.e(TAG, "Errore nel client protocol: " + e.getMessage());
-		} catch (UnknownHostException e) {
-			Log.e(TAG, "UnknownHostException: " + e.getMessage());
-		} catch (IOException e) {
-			Log.e(TAG, "IOException: " + e.getMessage());
+		String returnString=sendGet("http://ciopper90.altervista.org/unimore.html",0);
+		if(returnString.contains("UnimoreWifiLogin")){
+			//login gia effettuato
+			Log.d("Autentication", "2");
+			ok=3;
+		}else{
+			//bisogna effettuare il login	
+			ok=1;
 		}
 		if(ok!=3){
-			httpclient = getClient(20000);
-			String url="https://securelogin.arubanetworks.com/cgi-bin/login";
-			HttpPost httppost = new HttpPost(url);
-			for(int i=0;i<2;i++){
-				try {
-					// Add your data
-					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-					nameValuePairs.add(new BasicNameValuePair("_FORM_SUBMIT", "1"));
-					nameValuePairs.add(new BasicNameValuePair("which_form", "regform"));
-					nameValuePairs.add(new BasicNameValuePair("destination", ""));
-					nameValuePairs.add(new BasicNameValuePair("cmd", "login"));
-					nameValuePairs.add(new BasicNameValuePair("mac", mac));
-					nameValuePairs.add(new BasicNameValuePair("ip", ip));
-					nameValuePairs.add(new BasicNameValuePair("essid","unimore"));
-					nameValuePairs.add(new BasicNameValuePair("url", "about:blank"));
-					nameValuePairs.add(new BasicNameValuePair("user", data.getUsername()));
-					nameValuePairs.add(new BasicNameValuePair("password", data.getPassword()));
-					httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-					// Execute HTTP Post Request
-					HttpResponse response = httpclient.execute(httppost);
-					String returnString=EntityUtils.toString(response.getEntity());
-					if(returnString.contains("Authentication failed")){
-						Log.d("Autentication", "2");
-						ok=2;}
-					else{
-						ok=0;	
-					}
-				} catch (ClientProtocolException e) {
-					Log.e(TAG, "Errore nel client protocol: " + e.getMessage());
-				} catch (UnknownHostException e) {
-					Log.e(TAG, "UnknownHostException: " + e.getMessage());
-				} catch (IOException e) {
-					Log.e(TAG, "IOException: " + e.getMessage());
-				}
-				if(ok==0||ok==2)
-					break;
-			}
-		}
-		if(ok==1){
-			HttpPost httppost = new HttpPost(
-					"https://aruba-slave.unimore.it/cgi-bin/login");
+			try {
+				//String uri=returnString.substring(0,returnString.indexOf('?'));
+				URL url = new URL("https://c0.wifi.unimo.it/cgi-bin/login");
+				HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+				conn.setReadTimeout(10000);
+				conn.setConnectTimeout(20000);
+				conn.setRequestMethod("POST");
+				conn.setDoInput(true);
+				conn.setDoOutput(true);
 
-			for(int i=0;i<2;i++){
-				try {
-					// Add your data
-					List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-					nameValuePairs.add(new BasicNameValuePair("_FORM_SUBMIT", "1"));
-					nameValuePairs.add(new BasicNameValuePair("which_form", "regform"));
-					nameValuePairs.add(new BasicNameValuePair("destination", ""));
-					nameValuePairs.add(new BasicNameValuePair("cmd", "login"));
-					nameValuePairs.add(new BasicNameValuePair("mac", mac));
-					nameValuePairs.add(new BasicNameValuePair("ip", ip));
-					nameValuePairs.add(new BasicNameValuePair("essid","unimore"));
-					nameValuePairs.add(new BasicNameValuePair("url", "about:blank"));
-					nameValuePairs.add(new BasicNameValuePair("user", data.getUsername()));
-					nameValuePairs.add(new BasicNameValuePair("password", data.getPassword()));
-					httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-					// Execute HTTP Post Request
-					HttpResponse response = httpclient.execute(httppost);
-					String returnString=EntityUtils.toString(response.getEntity());
-					if(returnString.contains("Authentication failed")){
-						Log.d("Autentication", "2");
-						ok=2;}
-					else{
-						ok=0;	
-					}
-				} catch (ClientProtocolException e) {
-					Log.e(TAG, "Errore nel client protocol: " + e.getMessage());
-				} catch (UnknownHostException e) {
-					Log.e(TAG, "UnknownHostException: " + e.getMessage());
-				} catch (IOException e) {
-					Log.e(TAG, "IOException: " + e.getMessage());
+				List<NameValuePair> params = new ArrayList<NameValuePair>();
+				params.add(new BasicNameValuePair("_FORM_SUBMIT", "1"));
+				params.add(new BasicNameValuePair("which_form", "regform"));
+				params.add(new BasicNameValuePair("destination", ""));
+				params.add(new BasicNameValuePair("cmd", "login"));
+				params.add(new BasicNameValuePair("mac", mac));
+				params.add(new BasicNameValuePair("ip", ip));
+				params.add(new BasicNameValuePair("essid","unimore"));
+				params.add(new BasicNameValuePair("url", "about:blank"));
+				params.add(new BasicNameValuePair("user", data.getUsername()));
+				params.add(new BasicNameValuePair("password", data.getPassword()));
+
+				OutputStream os = conn.getOutputStream();
+				BufferedWriter writer = new BufferedWriter(
+						new OutputStreamWriter(os, "UTF-8"));
+				writer.write(getQuery(params));
+				writer.flush();
+				writer.close();
+				os.close();
+
+				//Get Response	
+				InputStream is = conn.getInputStream();
+				BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+				String line;
+				StringBuffer response = new StringBuffer(); 
+				while((line = rd.readLine()) != null) {
+					response.append(line);
+					response.append('\r');
 				}
-				if(ok==0||ok==2)
-					break;
+				rd.close();
+				//Log.d(TAG,""+response.toString());
+				returnString=response.toString();
+
+				//conn.connect();
+				if(returnString.contains("Authentication failed")){
+					Log.d("Autentication", "2");
+					ok=2;}
+				else{
+					ok=0;	
+				}
+			} catch (MalformedURLException e) {
+				Log.e(TAG, "MalformedURLException: " + e.getMessage());
+			} catch (ProtocolException e) {
+				Log.e(TAG, "ProtocolException: " + e.getMessage());
+			} catch (IOException e) {
+				Log.e(TAG, "IOException: " + e.getMessage());
 			}
 		}
+		if(ok==0||ok==2)
+			return;
 		if(ok==1){
 			throw new LoginException("Authentication ");
 		}
@@ -159,88 +112,123 @@ public class Authentication {
 		if(ok==3){
 			throw new LoginException("Login Error");
 		}
-
-
 	}
 
-	public static DefaultHttpClient getClient(int timeout) {
-		DefaultHttpClient ret = null;
 
-		//versione 1.1
+	private static String getQuery(List<NameValuePair> params) throws UnsupportedEncodingException
+	{
+		StringBuilder result = new StringBuilder();
+		boolean first = true;
 
-		try {
-			SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
-			sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+		for (NameValuePair pair : params)
+		{
+			if (first)
+				first = false;
+			else
+				result.append("&");
 
-			// Enable HTTP parameters
-			HttpParams params = new BasicHttpParams();
-			HttpProtocolParams.setVersion(params, HttpVersion.HTTP_1_1);
-			HttpProtocolParams.setContentCharset(params, HTTP.UTF_8);
-			//gestione timeout
-			HttpConnectionParams.setConnectionTimeout(params, timeout);
-			HttpConnectionParams.setSoTimeout(params, timeout);
-			
-			
-			// Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
-			SchemeRegistry registry = new SchemeRegistry();
-			registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-			registry.register(new Scheme("https", sslFactory, 443));
-
-			// Create a new connection manager using the newly created registry and then create a new HTTP client
-			// using this connection manager
-			ClientConnectionManager ccm = new ThreadSafeClientConnManager(params, registry);
-			ret = new DefaultHttpClient(ccm, params);
-
-		} catch (KeyManagementException e) {
-			e.printStackTrace();
-		} catch (UnrecoverableKeyException e) {
-			e.printStackTrace();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		} catch (KeyStoreException e) {
-			e.printStackTrace();
+			result.append(URLEncoder.encode(pair.getName(), "UTF-8"));
+			result.append("=");
+			result.append(URLEncoder.encode(pair.getValue(), "UTF-8"));
 		}
-		return ret;
+
+		return result.toString();
 	}
 
 	public static void logout() throws LogoutException {
-		HttpClient client = getClient(20000);
-		int ok1=1,ok2=1;
-		HttpGet get = new HttpGet("https://aruba-slave.unimore.it/cgi-bin/login?cmd=logout");
-		try {
-			client.execute(get);
-			ok1=0;
-		} catch (UnknownHostException e) {
-			Log.e(TAG, "UnknownHostException: " + e.getMessage());
-			ok1=1;
-		} catch (ClientProtocolException e) {
-			Log.e(TAG, "Errore nel client protocol: " + e.getMessage());
-			ok1=2;
-		} catch (IOException e) {
-			Log.e(TAG, "IOException: " + e.getMessage());
-			ok1=3;
-		}
-		if(ok1!=0){
-			get = new HttpGet("https://securelogin.arubanetworks.com/cgi-bin/login?cmd=logout");
-			try {
-				client.execute(get);
-				ok2=0;
-			} catch (UnknownHostException e) {
-				Log.e(TAG, "UnknownHostException: " + e.getMessage());
-				ok2=1;
-			} catch (ClientProtocolException e) {
-				Log.e(TAG, "Errore nel client protocol: " + e.getMessage());
-				ok2=2;
-			} catch (IOException e) {
-				Log.e(TAG, "IOException: " + e.getMessage());
-				ok2=3;
+		String returnString=sendGet("https://c0.wifi.unimo.it/cgi-bin/login?cmd=logout",1);
+		if(returnString.contains("User not logged in")){
+			throw new LogoutException("Not Logged");
+		}else{
+			if(!returnString.contains("Logout Successful")){
+				throw new LogoutException("Authentication ");
 			}
 		}
 
-		if(ok1!=0&&ok2!=0){
-			throw new LogoutException("Authentication ");
-		}
-
-
 	}
+
+	/**
+	 * 
+	 * @param address Url da invocare
+	 * @param type 0 -> http, 1-> https
+	 */
+	public static String sendGet(String address,int type){
+		if(type==0){
+			return sendGetHttp(address);
+		}else{
+			return sendGetHttps(address);
+		}
+		
+	}
+	
+	public static String sendGetHttps(String address){
+		try {
+			URL url = new URL(address);
+			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			int responseCode = conn.getResponseCode();
+
+			if(responseCode == 200){
+				BufferedReader in = new BufferedReader(
+						new InputStreamReader(conn.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+				return response.toString();
+			}
+		} catch (MalformedURLException e) {
+			Log.e(TAG, "MalformedURLException: " + e.getMessage());
+		} catch (ProtocolException e) {
+			Log.e(TAG, "ProtocolException: " + e.getMessage());
+		} catch (IOException e) {
+			Log.e(TAG, "IOException: " + e.getMessage());
+		}
+		return "";
+	}
+	public static String sendGetHttp(String address){
+		try {
+			URL url = new URL(address);
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod("GET");
+			int responseCode = conn.getResponseCode();
+
+			if(responseCode == 200){
+				BufferedReader in = new BufferedReader(
+						new InputStreamReader(conn.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+				return response.toString();
+			}
+			Log.d(TAG, responseCode +"");
+			/*boolean redirect = false;
+			int status = conn.getResponseCode();
+			if (status == HttpURLConnection.HTTP_MOVED_TEMP
+					|| status == HttpURLConnection.HTTP_MOVED_PERM
+					|| status == HttpURLConnection.HTTP_SEE_OTHER)
+				redirect = true;
+			if(redirect){
+				String newUrl = conn.getHeaderField("Location");
+				Log.d(TAG, newUrl+"");
+				return newUrl;
+			}*/
+				
+		} catch (MalformedURLException e) {
+			Log.e(TAG, "MalformedURLException: " + e.getMessage());
+		} catch (ProtocolException e) {
+			Log.e(TAG, "ProtocolException: " + e.getMessage());
+		} catch (IOException e) {
+			Log.e(TAG, "IOException: " + e.getMessage());
+		}
+		return "";
+	}
+
 }

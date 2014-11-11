@@ -180,8 +180,13 @@ public class Main extends Activity{
 						fc.logout();
 						logoutHandler.sendEmptyMessage(1);
 					} catch (LogoutException e) {
-						Log.e(TAG, "LogoutException: " + e.getMessage());
-						logoutHandler.sendEmptyMessage(0);
+						if(e.getMessage().contains("Not Logged")){
+							Log.e(TAG, "LogoutException: " + e.getMessage());
+							logoutHandler.sendEmptyMessage(2);
+						}else{
+							Log.e(TAG, "LogoutException: " + e.getMessage());
+							logoutHandler.sendEmptyMessage(0);
+						}
 					}
 				}
 			}).start();
@@ -189,7 +194,7 @@ public class Main extends Activity{
 			connectHandler.sendEmptyMessage(1);
 		}
 	}
-	
+
 	private Handler loginHandler = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
@@ -234,10 +239,17 @@ public class Main extends Activity{
 						R.string.logout_successful, Toast.LENGTH_SHORT);
 				toast.show();
 			} else {
-				vibra();
-				Toast toast = Toast.makeText(Main.this, R.string.logout_error,
-						Toast.LENGTH_SHORT);
-				toast.show();
+				if(msg.what == 2){
+					vibra();
+					Toast toast = Toast.makeText(Main.this, R.string.logout_error_not_logged,
+							Toast.LENGTH_SHORT);
+					toast.show();
+				}else{
+					vibra();
+					Toast toast = Toast.makeText(Main.this, R.string.logout_error,
+							Toast.LENGTH_SHORT);
+					toast.show();
+				}
 			}
 		}
 	};

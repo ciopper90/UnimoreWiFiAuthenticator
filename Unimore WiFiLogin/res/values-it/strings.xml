@@ -18,6 +18,7 @@
 	<string name="login_successful">Login effettuato</string>
 	<string name="login_data_error">User e/o password Sbagliati</string>
 	<string name="logout_error">Errore nel logout</string>
+	<string name="logout_error_not_logged">Utente non loggato</string>
 	<string name="logout_successful">Logout effettuato</string>
 	<string name="login_successful_all">Login già effettuato</string>
 	<string name="wifi_err">Errore thread connessione WiFi</string>

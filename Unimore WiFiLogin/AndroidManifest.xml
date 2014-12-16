@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="it.ciopper90.unimorelogin"
     android:installLocation="auto"
-    android:versionCode="7"
-    android:versionName="1.2.0" >
+    android:versionCode="8"
+    android:versionName="1.2.1" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />

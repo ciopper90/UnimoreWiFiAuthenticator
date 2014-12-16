@@ -16,11 +16,21 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+
 import android.util.Log;
 
 public class Authentication {
@@ -46,6 +56,11 @@ public class Authentication {
 			try {
 				//String uri=returnString.substring(0,returnString.indexOf('?'));
 				URL url = new URL("https://c0.wifi.unimo.it/cgi-bin/login");
+				int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+				if (currentapiVersion <= android.os.Build.VERSION_CODES.GINGERBREAD_MR1){
+				    trustAllHosts();
+				    //conn.setHostnameVerifier(DO_NOT_VERIFY);
+				}
 				HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 				conn.setReadTimeout(10000);
 				conn.setConnectTimeout(20000);
@@ -98,7 +113,8 @@ public class Authentication {
 			} catch (ProtocolException e) {
 				Log.e(TAG, "ProtocolException: " + e.getMessage());
 			} catch (IOException e) {
-				Log.e(TAG, "IOException: " + e.getMessage());
+				e.printStackTrace();
+				//Log.e(TAG, "IOException: " + e.getMessage());
 			}
 		}
 		if(ok==0||ok==2)
@@ -230,5 +246,43 @@ public class Authentication {
 		}
 		return "";
 	}
+
+	
+	/**
+	 * Trust every server - dont check for any certificate
+	 */
+	private static void trustAllHosts() {
+	        // Create a trust manager that does not validate certificate chains
+	        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+	                public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+	                        return new java.security.cert.X509Certificate[] {};
+	                }
+
+	                public void checkClientTrusted(X509Certificate[] chain,
+	                                String authType) throws CertificateException {
+	                }
+
+	                public void checkServerTrusted(X509Certificate[] chain,
+	                                String authType) throws CertificateException {
+	                }
+	        } };
+
+	        // Install the all-trusting trust manager
+	        try {
+	                SSLContext sc = SSLContext.getInstance("TLS");
+	                sc.init(null, trustAllCerts, new java.security.SecureRandom());
+	                HttpsURLConnection
+	                                .setDefaultSSLSocketFactory(sc.getSocketFactory());
+	        } catch (Exception e) {
+	                e.printStackTrace();
+	        }
+	}
+	
+
+final static HostnameVerifier DO_NOT_VERIFY = new HostnameVerifier() {
+    public boolean verify(String hostname, SSLSession session) {
+            return true;
+    }
+};
 
 }
